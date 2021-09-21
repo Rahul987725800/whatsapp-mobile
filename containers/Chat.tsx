@@ -1,8 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../global/Navigator';
 import React, { useLayoutEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Image } from 'react-native-elements';
-import { RootStackParamList } from '../App';
 interface ChatProps
   extends NativeStackScreenProps<RootStackParamList, 'Chat'> {}
 

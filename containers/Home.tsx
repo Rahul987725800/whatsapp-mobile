@@ -1,12 +1,18 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useLayoutEffect } from 'react';
-import { RootStackParamList } from '../App';
+import React, { useLayoutEffect, useState } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import Chats from './Chats';
 import Camera from './Camera';
 import Status from './Status';
 import Calls from './Calls';
+import { TouchableOpacity, View } from 'react-native';
+import { useAppDispatch } from '../store/hooks';
+import { setShowMainPopup } from '../store/reducers/generalReducer';
+import { RootStackParamList } from '../global/Navigator';
 const Tab = createMaterialTopTabNavigator();
 
 interface HomeProps
@@ -14,9 +20,36 @@ interface HomeProps
 
 function Home({ navigation, route }: HomeProps) {
   const { name } = route.params;
+  const dispatch = useAppDispatch();
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: 'WhatsApp',
+      headerRight: () => (
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: 60,
+            marginRight: 10,
+          }}
+        >
+          <TouchableOpacity activeOpacity={0.5}>
+            <IoniconsIcon name="md-search-sharp" size={20} color="#FAFFFF" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={() => {
+              dispatch(setShowMainPopup(true));
+            }}
+          >
+            <MaterialCommunityIconsIcon
+              name="dots-vertical"
+              size={20}
+              color="#FAFFFF"
+            />
+          </TouchableOpacity>
+        </View>
+      ),
     });
   }, []);
   return (

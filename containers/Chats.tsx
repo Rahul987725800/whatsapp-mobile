@@ -2,7 +2,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { FlatList, View } from 'react-native';
 import ChatItem from '../components/Chat/ChatItem';
-import { RootStackParamList } from '../App';
+import { RootStackParamList } from '../global/Navigator';
 
 const Chats = () => {
   const navigation =
