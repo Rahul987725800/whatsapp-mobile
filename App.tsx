@@ -7,7 +7,7 @@ import { createClient, Provider as UrqlProvider } from 'urql';
 import Layout from './global/Layout';
 
 const client = createClient({
-  url: 'http://192.168.43.184:8090/graphql',
+  url: 'http://192.168.43.184:8232/graphql',
 });
 
 const App = () => {

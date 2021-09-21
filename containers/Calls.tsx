@@ -1,94 +1,50 @@
-import React, { useEffect, useRef, useState } from 'react';
-import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useState } from 'react';
 
 import {
   StyleSheet,
   Text,
   View,
-  Animated,
+  TextInput,
   Button,
-  useWindowDimensions,
-  Easing,
+  Touchable,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { useQuery } from 'urql';
-import { withAnchorPoint } from 'react-native-anchor-point';
+import { useMutation, useQuery } from 'urql';
 
-const NotesQuery = `
+const getNotesQuery = `
   query {
     getNotes {
+      text
+      uuid
+    }
+  }
+`;
+const createNoteMutation = `
+  mutation ($data: createNoteInput) {
+    createNote(data: $data) {
+      uuid
       text
     }
   }
 `;
-const FadeInView = ({ show, items }: { show: boolean; items: string[] }) => {
-  const itemHeight = 45;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    if (show) {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 500,
-        easing: Easing.ease,
-        useNativeDriver: false,
-      }).start();
-    } else {
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: false,
-      }).start();
+const deleteNoteMutation = `
+  mutation ($uuid: String) {
+    deleteNote(uuid: $uuid) {
+        message
     }
-  }, [show]);
-
-  const animIn = withAnchorPoint(
-    { transform: [{ scale: fadeAnim as unknown as number }] },
-    { x: 1, y: 0 },
-    {
-      width: 190,
-      height: items.length * itemHeight,
-    },
-  );
-  const animOut = {
-    opacity: fadeAnim,
-  };
-
-  return (
-    <Animated.View style={show ? animIn : animOut}>
-      <View
-        style={{
-          width: 190,
-          height: items.length * itemHeight,
-          backgroundColor: '#313C42',
-        }}
-      >
-        {items.map((item, i) => (
-          <TouchableWithoutFeedback
-            key={i}
-            onPress={() => {
-              console.log(item);
-            }}
-          >
-            <View
-              style={{
-                height: itemHeight,
-                justifyContent: 'center',
-                paddingLeft: 20,
-              }}
-            >
-              <Text style={{ color: 'white', fontSize: 16 }}>{item}</Text>
-            </View>
-          </TouchableWithoutFeedback>
-        ))}
-      </View>
-    </Animated.View>
-  );
-};
+  }
+`;
 
 const Notes = () => {
+  console.log('rerenderred');
+  const [uuid, setUuid] = useState('');
+  const [input, setInput] = useState('');
   const [result, reExecuteQuery] = useQuery({
-    query: NotesQuery,
+    query: getNotesQuery,
   });
+
+  const [createNoteResult, createNote] = useMutation(createNoteMutation);
+  const [deleteNoteResult, deleteNote] = useMutation(deleteNoteMutation);
 
   const { data, fetching, error } = result;
 
@@ -96,107 +52,56 @@ const Notes = () => {
   if (error) return <Text>Oh no... {error.message}</Text>;
   return (
     <View style={{ flex: 1 }}>
-      {(data.getNotes as { text: string }[])?.map((note, i) => (
-        <Text key={i}>{note.text}</Text>
+      <TextInput
+        onChangeText={(text) => {
+          setInput(text);
+        }}
+        value={input}
+        placeholder="useless placeholder"
+        placeholderTextColor="grey"
+        style={{ color: 'black' }}
+      />
+      <Button
+        onPress={async () => {
+          await createNote({
+            data: {
+              uuid: uuid || Math.random().toString(),
+              text: input,
+            },
+          });
+          setInput('');
+          setUuid('');
+          reExecuteQuery({ requestPolicy: 'network-only' });
+        }}
+        title="Add"
+      />
+
+      {(data.getNotes as { text: string; uuid: string }[])?.map((note, i) => (
+        <TouchableWithoutFeedback
+          key={note.uuid}
+          onPress={() => {
+            setInput(note.text);
+            setUuid(note.uuid);
+          }}
+          onLongPress={async () => {
+            await deleteNote({
+              uuid: note.uuid,
+            });
+            reExecuteQuery({ requestPolicy: 'network-only' });
+          }}
+        >
+          <View style={{ padding: 20, backgroundColor: 'teal' }}>
+            <Text>{note.text}</Text>
+          </View>
+        </TouchableWithoutFeedback>
       ))}
     </View>
   );
 };
 const Calls = () => {
-  const dimensions = useWindowDimensions();
-  const [show, setShow] = useState(false);
-
   return (
     <View style={{ flex: 1 }}>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          setShow(false);
-        }}
-      >
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            height: dimensions.height,
-            width: dimensions.width,
-            backgroundColor: 'teal',
-          }}
-        >
-          <View
-            style={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-            }}
-          >
-            <FadeInView
-              show={show}
-              items={[
-                'New Group',
-                'New broadcast',
-                'WhatsApp Web',
-                'Starred messages',
-                'Payments',
-                'Settings',
-              ]}
-            />
-          </View>
-
-          <TouchableWithoutFeedback onPress={() => setShow(true)}>
-            <View
-              style={{
-                position: 'absolute',
-                right: 10,
-                top: 10,
-              }}
-            >
-              <MaterialCommunityIconsIcon
-                name="dots-vertical"
-                size={30}
-                color="#fff"
-              />
-            </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            onPress={() => {
-              console.log('some where pressed');
-            }}
-          >
-            <View
-              style={{
-                position: 'absolute',
-                left: 10,
-                top: 10,
-                height: 100,
-                width: 100,
-                backgroundColor: 'red',
-              }}
-            >
-              <MaterialCommunityIconsIcon
-                name="dots-horizontal"
-                size={30}
-                color="#fff"
-              />
-            </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => setShow(true)}>
-            <View
-              style={{
-                position: 'absolute',
-                right: 10,
-                top: 10,
-              }}
-            >
-              <MaterialCommunityIconsIcon
-                name="dots-vertical"
-                size={30}
-                color="#fff"
-              />
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
-      </TouchableWithoutFeedback>
-      {/* <Notes /> */}
+      <Notes />
     </View>
   );
 };
