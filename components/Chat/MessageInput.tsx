@@ -1,16 +1,19 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, TextInput } from 'react-native';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { commonStyles } from '../../styles/common';
+import { useIsKeyBoardVisible } from '../../hooks/useIsKeyBoardVisible';
 
 interface MessageInputProps {
-  message: string;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  messageInput: string;
+  setMessageInput: React.Dispatch<React.SetStateAction<string>>;
 }
-const MessageInput = ({ message, setMessage }: MessageInputProps) => {
+const MessageInput = ({ messageInput, setMessageInput }: MessageInputProps) => {
+  const textInputRef = useRef<TextInput>(null);
+  const isKeyBoardVisible = useIsKeyBoardVisible();
   return (
     <View
       style={{
@@ -20,13 +23,23 @@ const MessageInput = ({ message, setMessage }: MessageInputProps) => {
     >
       <View style={{ flex: 2, justifyContent: 'center' }}>
         <TextInput
+          ref={textInputRef}
           onChangeText={(text) => {
-            setMessage(text);
+            setMessageInput(text);
           }}
-          value={message}
+          value={messageInput}
           placeholder="useless placeholder"
           placeholderTextColor="#707980"
           style={styles.messageInput}
+          onTouchStart={() => {
+            if (textInputRef.current) {
+              if (!isKeyBoardVisible) {
+                // first blur then focus by default
+                // this ensures we get the keyboard to type
+                textInputRef.current.blur();
+              }
+            }
+          }}
         />
         <FontAwesome5Icon
           name="smile"
@@ -47,6 +60,7 @@ const MessageInput = ({ message, setMessage }: MessageInputProps) => {
           style={{ position: 'absolute', right: 15 }}
         />
       </View>
+      <View style={{ width: 10 }} />
       <View style={styles.actionButton}>
         <MaterialCommunityIconsIcon name="send" size={20} color="#fff" />
       </View>
