@@ -1,10 +1,12 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../global/Navigator';
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { Image, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { useAsyncStorageState } from '../hooks/useAsyncStorageState';
 import MessageInput from '../components/Chat/MessageInput';
+import Messages from '../components/Chat/Messages';
+import { MessageType } from '../types/ChatTypes';
 interface ChatProps
   extends NativeStackScreenProps<RootStackParamList, 'Chat'> {}
 
@@ -15,6 +17,33 @@ const Chat = ({ navigation, route }: ChatProps) => {
     '',
     name + 'message',
   );
+  const sendMessage = () => {
+    if (messageInput) {
+      const messageInputCopy = messageInput;
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: messageInputCopy,
+          type: 'sent',
+        },
+      ]);
+      setMessageInput('');
+    }
+  };
+  const [messages, setMessages] = useState<MessageType[]>(() => [
+    {
+      type: 'sent',
+      text: 'hii Hello',
+    },
+    {
+      type: 'received',
+      text: 'hii Hello kya kar raha hai',
+    },
+    {
+      type: 'sent',
+      text: 'hii hor bhai 123',
+    },
+  ]);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: name,
@@ -36,9 +65,12 @@ const Chat = ({ navigation, route }: ChatProps) => {
           justifyContent: 'flex-end',
         }}
       >
+        <Messages messages={messages} />
+        <View style={{ height: 5 }} />
         <MessageInput
           messageInput={messageInput}
           setMessageInput={setMessageInput}
+          sendMessage={sendMessage}
         />
         <View style={{ height: 5 }} />
       </View>

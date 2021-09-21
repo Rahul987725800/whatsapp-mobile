@@ -1,6 +1,12 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
@@ -10,8 +16,13 @@ import { useIsKeyBoardVisible } from '../../hooks/useIsKeyBoardVisible';
 interface MessageInputProps {
   messageInput: string;
   setMessageInput: React.Dispatch<React.SetStateAction<string>>;
+  sendMessage: () => void;
 }
-const MessageInput = ({ messageInput, setMessageInput }: MessageInputProps) => {
+const MessageInput = ({
+  messageInput,
+  setMessageInput,
+  sendMessage,
+}: MessageInputProps) => {
   const textInputRef = useRef<TextInput>(null);
   const isKeyBoardVisible = useIsKeyBoardVisible();
   return (
@@ -28,7 +39,7 @@ const MessageInput = ({ messageInput, setMessageInput }: MessageInputProps) => {
             setMessageInput(text);
           }}
           value={messageInput}
-          placeholder="useless placeholder"
+          placeholder="Message"
           placeholderTextColor="#707980"
           style={styles.messageInput}
           onTouchStart={() => {
@@ -61,9 +72,11 @@ const MessageInput = ({ messageInput, setMessageInput }: MessageInputProps) => {
         />
       </View>
       <View style={{ width: 10 }} />
-      <View style={styles.actionButton}>
-        <MaterialCommunityIconsIcon name="send" size={20} color="#fff" />
-      </View>
+      <TouchableWithoutFeedback onPress={sendMessage}>
+        <View style={styles.actionButton}>
+          <MaterialCommunityIconsIcon name="send" size={20} color="#fff" />
+        </View>
+      </TouchableWithoutFeedback>
     </View>
   );
 };
@@ -76,6 +89,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2D383E',
     borderRadius: 1000,
     paddingLeft: 45,
+    fontSize: 16,
   },
   actionButton: {
     backgroundColor: '#02AF9C',
