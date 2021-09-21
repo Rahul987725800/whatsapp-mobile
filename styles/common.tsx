@@ -4,4 +4,8 @@ export const commonStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'red',
   },
+  padLeftRight: {
+    paddingLeft: 4,
+    paddingRight: 4,
+  },
 });

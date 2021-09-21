@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { useAsyncStorageState } from '../hooks/useAsyncStorageState';
 

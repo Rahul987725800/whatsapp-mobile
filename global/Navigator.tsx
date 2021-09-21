@@ -14,7 +14,7 @@ const Navigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Practice"
+        initialRouteName="Home"
         screenOptions={{
           animation: 'slide_from_right',
           headerStyle: { backgroundColor: '#232D36' },

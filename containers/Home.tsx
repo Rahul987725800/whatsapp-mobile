@@ -5,7 +5,7 @@ import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import Chats from './Chats';
+import AllChats from './AllChats';
 import Camera from './Camera';
 import Status from './Status';
 import Calls from './Calls';
@@ -82,7 +82,7 @@ function Home({ navigation, route }: HomeProps) {
           ),
         }}
       />
-      <Tab.Screen name="chats" component={Chats} options={{}} />
+      <Tab.Screen name="chats" component={AllChats} />
       <Tab.Screen name="status" component={Status} />
       <Tab.Screen name="calls" component={Calls} />
     </Tab.Navigator>

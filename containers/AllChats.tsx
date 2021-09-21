@@ -1,10 +1,10 @@
 import { NavigationProp, useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { FlatList, View } from 'react-native';
-import ChatItem from '../components/Chat/ChatItem';
+import ChatItem from '../components/AllChats/ChatItem';
 import { RootStackParamList } from '../global/Navigator';
 
-const Chats = () => {
+const AllChats = () => {
   const navigation =
     useNavigation<NavigationProp<RootStackParamList, 'Home'>>();
   const list = [
@@ -46,4 +46,4 @@ const Chats = () => {
   );
 };
 
-export default Chats;
+export default AllChats;
