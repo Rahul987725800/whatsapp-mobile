@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider as StoreProvider } from 'react-redux';
-import { store } from './store';
+import { store } from './store/store';
 import { StyleSheet } from 'react-native';
 
 import { createClient, Provider as UrqlProvider } from 'urql';
