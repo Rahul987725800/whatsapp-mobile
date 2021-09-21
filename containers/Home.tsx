@@ -9,10 +9,11 @@ import AllChats from './AllChats';
 import Camera from './Camera';
 import Status from './Status';
 import Calls from './Calls';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { useAppDispatch } from '../store/hooks';
 import { setShowMainPopup } from '../store/reducers/generalReducer';
 import { RootStackParamList } from '../global/Navigator';
+import IconButton from '../components/Shared/IconButton';
 const Tab = createMaterialTopTabNavigator();
 
 interface HomeProps
@@ -29,25 +30,24 @@ function Home({ navigation, route }: HomeProps) {
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            width: 60,
-            marginRight: 10,
+            width: 70,
           }}
         >
-          <TouchableOpacity activeOpacity={0.5}>
+          <IconButton onPress={() => {}}>
             <IoniconsIcon name="md-search-sharp" size={20} color="#FAFFFF" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.5}
+          </IconButton>
+
+          <IconButton
             onPress={() => {
               dispatch(setShowMainPopup(true));
             }}
           >
             <MaterialCommunityIconsIcon
               name="dots-vertical"
-              size={20}
+              size={25}
               color="#FAFFFF"
             />
-          </TouchableOpacity>
+          </IconButton>
         </View>
       ),
     });

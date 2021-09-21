@@ -11,17 +11,17 @@ import { withAnchorPoint } from 'react-native-anchor-point';
 
 const PopupMenu = ({ show, items }: { show: boolean; items: string[] }) => {
   const itemHeight = 45;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const animVal = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     if (show) {
-      Animated.timing(fadeAnim, {
+      Animated.timing(animVal, {
         toValue: 1,
         duration: 200,
         easing: Easing.ease,
         useNativeDriver: false,
       }).start();
     } else {
-      Animated.timing(fadeAnim, {
+      Animated.timing(animVal, {
         toValue: 0,
         duration: 200,
         useNativeDriver: false,
@@ -30,7 +30,7 @@ const PopupMenu = ({ show, items }: { show: boolean; items: string[] }) => {
   }, [show]);
 
   const animIn = withAnchorPoint(
-    { transform: [{ scale: fadeAnim as unknown as number }] },
+    { transform: [{ scale: animVal as unknown as number }] },
     { x: 1, y: 0 },
     {
       width: 190,
@@ -38,7 +38,7 @@ const PopupMenu = ({ show, items }: { show: boolean; items: string[] }) => {
     },
   );
   const animOut = {
-    opacity: fadeAnim,
+    opacity: animVal,
   };
 
   return (
