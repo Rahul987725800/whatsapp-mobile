@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StyleSheet, Text, View, Button } from 'react-native';
+import { useAsyncStorageState } from '../hooks/useAsyncStorageState';
 
 const Practice = () => {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    (async () => {
-      const fetchedCount = await AsyncStorage.getItem('count');
-      if (fetchedCount) {
-        setCount(Number(fetchedCount));
-      }
-    })();
-  }, []);
-  useEffect(() => {
-    AsyncStorage.setItem('count', String(count));
-  }, [count]);
+  const [count, setCount] = useAsyncStorageState(0, 'count');
   return (
     <View>
       <Text>Practice</Text>
+      <Text>{count}</Text>
+      <Button
+        title="add"
+        onPress={() => {
+          setCount(count + 1);
+        }}
+      />
     </View>
   );
 };
