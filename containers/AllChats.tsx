@@ -1,26 +1,25 @@
 import { NavigationProp, useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { FlatList, View } from 'react-native';
+import { useQuery } from 'urql';
 import ChatItem from '../components/AllChats/ChatItem';
 import { RootStackParamList } from '../global/Navigator';
-
+const getUsersQuery = `
+  query {
+    getUsers {
+      name
+      phone
+    }
+  }
+`;
+//
 const AllChats = () => {
   const navigation =
     useNavigation<NavigationProp<RootStackParamList, 'Home'>>();
-  const list = [
-    {
-      name: 'Amy Farha',
-      avatar_url:
-        'https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png',
-      subtitle: 'Vice President',
-    },
-    {
-      name: 'Chris Jackson',
-      avatar_url:
-        'https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png',
-      subtitle: 'Vice Chairman',
-    },
-  ];
+  const [result, reExecuteQuery] = useQuery({
+    query: getUsersQuery,
+  });
+
   return (
     <View
       style={{
@@ -29,15 +28,18 @@ const AllChats = () => {
       }}
     >
       <FlatList
-        data={list}
+        data={result?.data?.getUsers || []}
         renderItem={({ item }) => (
           <ChatItem
-            avatar={item.avatar_url}
+            avatar=""
             name={item.name}
-            message="This is the message"
+            message={item.phone}
             time="4:00 pm"
             onPress={() => {
-              navigation.navigate('Chat', { name: item.name });
+              navigation.navigate('Chat', {
+                name: item.name,
+                phone: item.phone,
+              });
             }}
           />
         )}

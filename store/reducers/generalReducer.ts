@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 const initialState = {
   showMainPopup: false,
+  user: {
+    name: '',
+    phone: '',
+  },
 };
 const generalSlice = createSlice({
   name: 'general',
@@ -9,8 +13,17 @@ const generalSlice = createSlice({
     setShowMainPopup(state, action: PayloadAction<boolean>) {
       state.showMainPopup = action.payload;
     },
+    setUser(
+      state,
+      action: PayloadAction<{
+        name: string;
+        phone: string;
+      }>,
+    ) {
+      state.user = action.payload;
+    },
   },
 });
 
-export const { setShowMainPopup } = generalSlice.actions;
+export const { setShowMainPopup, setUser } = generalSlice.actions;
 export default generalSlice.reducer;
